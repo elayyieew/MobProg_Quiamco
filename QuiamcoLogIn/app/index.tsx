@@ -19,8 +19,8 @@ export default function Index() {
     >
       <SafeAreaView style={styles.content}>
         <Logo />
-        <InputField label="E-mail" value={email} onChangeText={setEmail} />
-        <InputField label="Password" secureTextEntry value={password} onChangeText={setPassword} />
+        <InputField title= "E-mail" label="Enter E-mail" value={email} onChangeText={setEmail} />
+        <InputField title= "Password" label="Enter Password" secureTextEntry value={password} onChangeText={setPassword} />
         <Button/>
         <Register onPress={() => {}} />
       </SafeAreaView>
