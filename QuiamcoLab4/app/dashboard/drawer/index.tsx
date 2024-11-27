@@ -12,7 +12,7 @@ const index = () => {
   >
     <SafeAreaView style={styles.container}>
         <Image 
-          source={require('../../assets/images/resources/sun.png')}
+          source={require('../../../assets/images/resources/sun.png')}
           style={styles.main}
         />
         <Text style= {styles.texts}>

@@ -29,7 +29,7 @@ const login = () => {
                 <RememberMeCheckbox />
                 <Button
                     mode="contained"
-                    onPress={() => router.replace('dashboard')}
+                    onPress={() => router.replace('../dashboard')}
                     buttonColor="#FCB316"
                     style={styles.button}
                 >

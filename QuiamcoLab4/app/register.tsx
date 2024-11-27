@@ -30,7 +30,7 @@ const register = () => {
             <InputField title= "Confirm Password" label="Enter Password" secureTextEntry value={password} onChangeText={setPassword} />
             <Button
                 mode="contained"
-                onPress={() => router.replace('/dashboard')}
+                onPress={() => router.replace('../dashboard')}
                 buttonColor="#FCB316"
                 style= {{ width: '90%', borderRadius: 8, marginTop: 10}}
                 textColor='white'
