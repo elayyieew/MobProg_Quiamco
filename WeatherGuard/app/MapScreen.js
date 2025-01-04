@@ -117,44 +117,6 @@ const MapScreen = () => {
           ))}
         </MapView>
       </GradientBackground>
-
-      <View style={styles.bottomNavigation}>
-        <TouchableOpacity onPress={() => navigation.navigate('Homepage')}>
-          <Ionicons
-            name="home"
-            size={24}
-            color={selectedTab === 'home' ? '#FFC107' : '#FFF'}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Map')}>
-          <Ionicons
-            name="map"
-            size={24}
-            color={selectedTab === 'map' ? '#FFC107' : '#FFF'}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('FamilyConnectivity')}>
-          <Ionicons
-            name="people"
-            size={24}
-            color={selectedTab === 'family' ? '#FFC107' : '#FFF'}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
-          <Ionicons
-            name="notifications"
-            size={24}
-            color={selectedTab === 'alerts' ? '#FFC107' : '#FFF'}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Ionicons
-            name="menu"
-            size={24}
-            color={selectedTab === 'menu' ? '#FFC107' : '#FFF'}
-          />
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
