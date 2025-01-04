@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,22 +9,46 @@ import {
 } from 'react-native';
 import GradientBackground from '../components/GradientBackground';
 import axios from 'axios';
+import { Ionicons } from '@expo/vector-icons';
 
 const Homepage = ({ navigation }) => {
   const [weatherData, setWeatherData] = useState(null);
+  const scrollViewRef = useRef(null);
 
   // API Key and Base URL
-  const API_KEY = '9e21492df56af56c9454a0cdfb503713';
-  const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
+  const API_KEY = 'ef615541865044029d3121919250401'; 
+  const BASE_URL = 'https://api.weatherapi.com/v1/forecast.json';
+
+  // Map Weather Conditions to Local Images
+  const getWeatherImage = (condition) => {
+    switch (condition.toLowerCase()) {
+      case 'sunny':
+      case 'clear':
+        return require('../assets/images/sun.png');
+      case 'cloudy':
+      case 'partly cloudy':
+        return require('../assets/images/cloud.png');
+      case 'rain':
+      case 'light rain':
+      case 'moderate rain':
+        return require('../assets/images/rainy.png');
+      case 'thunderstorm':
+        return require('../assets/images/thunder.png');
+      case 'snow':
+        return require('../assets/images/snow.png');
+      default:
+        return require('../assets/images/cloud.png'); 
+    }
+  };
 
   // Fetch Weather Data
   const fetchWeatherData = async () => {
     try {
       const response = await axios.get(BASE_URL, {
         params: {
-          q: 'Cagayan de Oro', // City name
-          units: 'metric',     // Temperature in Celsius
-          appid: API_KEY,      // Your API Key
+          key: API_KEY,
+          q: 'Cagayan de Oro',
+          days: 7,
         },
       });
       setWeatherData(response.data);
@@ -38,19 +62,16 @@ const Homepage = ({ navigation }) => {
     fetchWeatherData();
   }, []);
 
-  // Define weather images
-  const getWeatherImage = (condition) => {
-    switch (condition) {
-      case 'Clear':
-        return require('../assets/images/resources/sun.png'); // Sunny
-      case 'Clouds':
-        return require('../assets/images/resources/cloud.png'); // Cloudy
-      case 'Rain':
-        return require('../assets/images/resources/rainy.png'); // Rainy
-      case 'Thunderstorm':
-        return require('../assets/images/resources/thunder.png'); // Thunderstorm
-      default:
-        return require('../assets/images/resources/cloud.png'); // Default to cloudy
+  // Scroll Functions
+  const scrollToRight = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ x: 300, animated: true });
+    }
+  };
+
+  const scrollToLeft = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ x: -300, animated: true });
     }
   };
 
@@ -59,27 +80,31 @@ const Homepage = ({ navigation }) => {
       {/* Top Logo */}
       <View style={styles.logoContainer}>
         <Image
-          source={require('../assets/images/small_logo.png')} // Add your logo file in the assets folder
+          source={require('../assets/images/logo.png')}
           style={styles.logo}
         />
       </View>
 
       {/* Location Section */}
       <View style={styles.header}>
-        <Text style={styles.locationText}>{weatherData?.name || 'Loading...'}</Text>
+        <Text style={styles.locationText}>{weatherData?.location?.name || 'Loading...'}</Text>
       </View>
 
       {/* Weather Icon and Temperature */}
       <View style={styles.weatherSection}>
         <Image
-          source={weatherData ? getWeatherImage(weatherData.weather[0].main) : require('../assets/images/resources/cloud.png')}
+          source={
+            weatherData
+              ? getWeatherImage(weatherData.current.condition.text)
+              : require('../assets/images/cloud.png')
+          }
           style={styles.weatherIcon}
         />
         <Text style={styles.temperatureText}>
-          {weatherData ? `${weatherData.main.temp}°C` : '...'}
+          {weatherData ? `${weatherData.current.temp_c}°C` : '...'}
         </Text>
         <Text style={styles.weatherConditionText}>
-          {weatherData ? weatherData.weather[0].description : 'Loading...'}
+          {weatherData ? weatherData.current.condition.text : 'Loading...'}
         </Text>
         <Text style={styles.dateTimeText}>
           {new Date().toLocaleDateString()} • {new Date().toLocaleTimeString()}
@@ -89,25 +114,36 @@ const Homepage = ({ navigation }) => {
       {/* Scrollable Weather Forecast */}
       <Text style={styles.weekly}>Weekly Forecast</Text>
       <View style={styles.forecastSection}>
+        {/* Left Arrow */}
+        <TouchableOpacity onPress={scrollToLeft} style={[styles.arrowButton, { left: 10 }]}>
+          <Ionicons name="arrow-back-circle" size={40} color="white" />
+        </TouchableOpacity>
+
         <ScrollView
+          ref={scrollViewRef}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContainer}>
-          {Array.from({ length: 7 }).map((_, index) => (
+          {weatherData?.forecast?.forecastday.map((day, index) => (
             <View key={index} style={styles.dayContainer}>
               <Text style={styles.dayText}>
-                {['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'][index]}
+                {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' })}
               </Text>
               <Image
-                source={index % 2 === 0 ? require('../assets/images/resources/sun.png') : require('../assets/images/resources/rainy.png')}
+                source={getWeatherImage(day.day.condition.text)}
                 style={styles.forecastIcon}
               />
               <Text style={styles.tempText}>
-                {index % 2 === 0 ? '34°' : '32°'}
+                {Math.round(day.day.avgtemp_c)}°C
               </Text>
             </View>
           ))}
         </ScrollView>
+
+        {/* Right Arrow */}
+        <TouchableOpacity onPress={scrollToRight} style={[styles.arrowButton, { right: 10 }]}>
+          <Ionicons name="arrow-forward-circle" size={40} color="white" />
+        </TouchableOpacity>
       </View>
     </GradientBackground>
   );
@@ -116,13 +152,13 @@ const Homepage = ({ navigation }) => {
 const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
-    marginTop: 20,  
-    marginBottom: 15, 
+    marginTop: 20,
+    marginBottom: 15,
   },
   logo: {
     width: 80,
     height: 80,
-    resizeMode: 'contain', 
+    resizeMode: 'contain',
   },
   header: {
     alignItems: 'center',
@@ -134,49 +170,52 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   weatherSection: {
-    alignItems: 'center', 
+    alignItems: 'center',
   },
   weatherIcon: {
-    width: 230, 
-    height: 230, 
+    width: 230,
+    height: 230,
     resizeMode: 'contain',
-    marginBottom: 15, 
+    marginBottom: 15,
   },
   temperatureText: {
     fontSize: 54,
     color: 'white',
     fontWeight: 'bold',
-    marginBottom: 5, 
+    marginBottom: 5,
   },
   weatherConditionText: {
     fontSize: 18,
     color: 'white',
-    marginVertical: 5, 
+    marginVertical: 5,
   },
   dateTimeText: {
     fontSize: 14,
     color: 'white',
-    marginTop: 5, 
+    marginTop: 5,
   },
   forecastSection: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
+    position: 'relative',
   },
   scrollContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginRight: 50,
+    marginLeft: 50,
   },
   dayContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: '#1844A5',
     borderRadius: 50,
     padding: 20,
     marginHorizontal: 5,
     alignItems: 'center',
     width: 75,
     height: 150,
-    marginRight: 8, 
+    marginRight: 8,
   },
   dayText: {
     color: 'white',
@@ -187,20 +226,26 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     resizeMode: 'contain',
-    marginVertical: 9, 
+    marginVertical: 9,
   },
   tempText: {
     color: 'white',
     fontSize: 16,
-    marginTop: 5, 
+    marginTop: 5,
   },
   weekly: {
     fontSize: 20,
     color: 'white',
     fontWeight: 'bold',
-    marginTop: 30,  
-    textAlign: 'left', 
-  }
+    marginTop: 30,
+    textAlign: 'left',
+  },
+  arrowButton: {
+    position: 'absolute',
+    top: '35%',
+    zIndex: 1,
+    padding: 10,
+  },
 });
 
 export default Homepage;

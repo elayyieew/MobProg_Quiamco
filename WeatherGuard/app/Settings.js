@@ -15,16 +15,6 @@ import GradientBackground from '../components/GradientBackground';
 const Settings = ({ navigation }) => {
   return (
     <GradientBackground>
-      {/* Search Bar */}
-      <View style={styles.searchBarContainer}>
-        <Ionicons name="search" size={20} color="#fff" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search"
-          placeholderTextColor="#999"
-        />
-      </View>
-
       {/* Menu Items */}
       <ScrollView style={styles.container}>
         <TouchableOpacity
@@ -40,7 +30,7 @@ const Settings = ({ navigation }) => {
 
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => navigation.navigate('PrivacyAndSecurity')}
+          onPress={() => navigation.navigate('Privacyandsecurity')}
         >
           <View style={styles.menuLeft}>
             <Ionicons name="lock-closed" size={15} color="#fff" style={styles.menuIcon} />
@@ -65,27 +55,11 @@ const Settings = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  searchBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#9C9CA7',
-    borderRadius: 8,
-    marginHorizontal: 20,
-    paddingHorizontal: 10,
-    marginBottom: 15,
-    height: 40,
-  },
-  searchIcon: {
-    marginRight: 10, // Creates spacing between icon and text input
-  },
-  searchBar: {
-    flex: 1,
-    fontSize: 16,
-    color: '#fff',
-  },
+
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 30
   },
   menuItem: {
     flexDirection: 'row',

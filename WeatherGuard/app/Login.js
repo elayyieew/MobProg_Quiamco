@@ -34,7 +34,7 @@ const login = ({navigation}) => {
                 <OrDivider />
                 <Button
                     mode='text'
-                    onPress={() => navigation.navigate('Register')}
+                    onPress={() => navigation.navigate('Signup')}
                     textColor='white'
                 >
                     Need an Account? REGISTER.

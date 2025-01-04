@@ -3,16 +3,19 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { TouchableOpacity } from 'react-native';
 
 import Login from './Login';
 import Signup from './Signup';
 import Homepage from './Homepage';
 import Notification from './Notification';
-import FamilyConnectivity from './FamilyConnectivity';
-import SideMenu from '../components/SideMenu'; // Adjust the path as needed
+import SideMenu from '../components/SideMenu';
 import Opening from './Opening';
 import Map from './MapScreen';
 import Settings from './Settings';
+import Account from './Account';
+import About from './About';
+import Privacyandsecurity from './Privacyandsecurity';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -44,7 +47,7 @@ const BottomTabs = ({ navigation }) => (
             color="#FCB316"
           />
         ),
-        headerShown: false,  // This hides the header for the Home screen
+        headerShown: false, // Hide header for Home screen
       }}
     />
     <Tab.Screen
@@ -74,36 +77,18 @@ const BottomTabs = ({ navigation }) => (
       }}
     />
     <Tab.Screen
-      name="FamilyConnectivity"
-      component={FamilyConnectivity}
-      options={{
-        title: 'Family',
-        tabBarIcon: ({ focused }) => (
-          <MaterialCommunityIcons
-            name={focused ? 'account-group' : 'account-group-outline'}
-            size={24}
-            color="#FCB316"
-          />
-        ),
-      }}
-    />
-    <Tab.Screen
       name="DrawerToggle"
-      component={() => null} // Placeholder component
+      component={() => null} // Placeholder
       listeners={{
         tabPress: (e) => {
-          e.preventDefault(); // Prevent default tab action
-          navigation.openDrawer(); // Open the drawer
+          e.preventDefault();
+          navigation.openDrawer(); // Open drawer on tab press
         },
       }}
       options={{
         title: 'Menu',
         tabBarIcon: () => (
-          <MaterialCommunityIcons
-            name="menu"
-            size={24}
-            color="#FCB316"
-          />
+          <MaterialCommunityIcons name="menu" size={24} color="#FCB316" />
         ),
       }}
     />
@@ -115,25 +100,19 @@ const AuthStack = () => (
   <Stack.Navigator
     initialRouteName="Opening"
     screenOptions={{
-      headerStyle: {
-        backgroundColor: '#091A3F',
-      },
+      headerStyle: { backgroundColor: '#091A3F' },
       headerTintColor: '#fff',
     }}
   >
     <Stack.Screen
       name="Opening"
       component={Opening}
-      options={{
-        headerShown: false,
-      }}
+      options={{ headerShown: false }}
     />
     <Stack.Screen
       name="Login"
       component={Login}
-      options={{
-        headerShown: false,
-      }}
+      options={{ headerShown: false }}
     />
     <Stack.Screen
       name="Signup"
@@ -147,17 +126,26 @@ const AuthStack = () => (
 const SettingsStack = () => (
   <Stack.Navigator
     screenOptions={{
-      headerStyle: {
-        backgroundColor: '#091A3F',
-      },
+      headerStyle: { backgroundColor: '#091A3F' },
       headerTintColor: '#fff',
     }}
   >
-    <Stack.Screen
-      name="Settings"
+    <Stack.Screen name="Settings"
       component={Settings}
-      options={{ title: 'Settings' }}
-    />
+      options={({ navigation }) => ({
+        title: 'Settings',
+        headerLeft: () => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('MainApp')}
+            style={{ paddingHorizontal: 10 }}
+          >
+            <MaterialCommunityIcons name="arrow-left" size={24} color="#fff" />
+          </TouchableOpacity>
+        ),
+      })}/>
+    <Stack.Screen name="Account" component={Account} />
+    <Stack.Screen name="Privacyandsecurity" component={Privacyandsecurity} />
+    <Stack.Screen name="About" component={About} />
   </Stack.Navigator>
 );
 
@@ -167,9 +155,7 @@ const RootLayout = () => (
     initialRouteName="Auth"
     drawerContent={(props) => <SideMenu {...props} />}
     screenOptions={{
-      drawerStyle: {
-        backgroundColor: 'rgba(9, 26, 63, 0.8)',
-      },
+      drawerStyle: { backgroundColor: 'rgba(9, 26, 63, 0.8)' },
       drawerPosition: 'right',
       headerShown: false,
     }}

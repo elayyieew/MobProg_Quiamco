@@ -1,51 +1,62 @@
-// screens/RegisterScreen.js
-import React from 'react';
-import { TextInput, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import GradientBackground from '../components/GradientBackground';
+import { SafeAreaView, StyleSheet, Text } from "react-native";
+import React, { useState } from "react";
+import { Button } from'react-native-paper';
+import { LinearGradient } from 'expo-linear-gradient';
+import Logo from "../components/Logo";
+import InputField from "../components/login/InputField";
 
+const Signup = ({navigation}) => {
+  const [size] = useState(100);
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
 
-
-const Signup = ({ navigation }) => {
   return (
-    <GradientBackground>
-     
-      <TextInput style={styles.input} placeholder="Username" placeholderTextColor='rgba(255, 255, 255, 0.2)' />
-      <TextInput style={styles.input} placeholder="Email" placeholderTextColor='rgba(255, 255, 255, 0.2)' />
-      <TextInput style={styles.input} placeholder="Password" placeholderTextColor='rgba(255, 255, 255, 0.2)' secureTextEntry />
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Profile')}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
-    </GradientBackground>
+    <LinearGradient
+      colors={['#091A3F', '#054DEB']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.background}
+    >
+      <SafeAreaView style={styles.content}>
+        <Logo size={size} />
+        <InputField title= "Name" label="Enter Name" value={name} onChangeText={setName} />
+        <InputField title= "E-mail" label="Enter E-mail" value={email} onChangeText={setEmail} />
+        <InputField title= "Password" label="Enter Password" secureTextEntry value={password} onChangeText={setPassword} />
+        <InputField title= "Confirm Password" label="Enter Password" secureTextEntry value={password} onChangeText={setPassword} />
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate('MainApp')}
+          buttonColor="#FCB316"
+          style={styles.button}
+          >
+          Log In
+          </Button>
+      </SafeAreaView>
+    </LinearGradient>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  logo: {
-    width: 50,
-    height: 50,
-    marginBottom: 20,
+  background: {
+    flex: 1,
   },
-  input: {
-    width: '80%',
-    height: 50,
-    backgroundColor: 'rgba(255, 255,255, 0.2)',
-    borderRadius: 5,
-    paddingHorizontal: 15,
-    marginBottom: 15, 
-
-  },
-  button: {
-    width: '80%',
-    height: 50,
-    backgroundColor: '#FCB316',
-    borderRadius: 5,
+  content: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    paddingHorizontal: 20,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  button: {
+    borderRadius: 10,  
+    marginTop: 5,
+    justifyContent: 'center',
+    width: 375,
+    height: 45
+},
+  input: {
+    width: '100%',
+    marginBottom: 10,
   },
 });
 
